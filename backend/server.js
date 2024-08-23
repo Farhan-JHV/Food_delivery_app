@@ -1,47 +1,46 @@
-import express from "express";
+import express from 'express';
 import cors from 'cors';
-import { connectDB } from "./config/db.js";
-import foodRouter from "./routes/foodRoute.js";
-import userRouter from "./routes/userRoute.js";
-import 'dotenv/config'
-import cartRouter from "./routes/cartRoute.js";
-import orderRouter from "./routes/orderRoute.js";
-import path from "path";
+import { connectDB } from './config/db.js';
+import foodRouter from './routes/foodRoute.js';
+import userRouter from './routes/userRoute.js';
+import 'dotenv/config';
+import cartRouter from './routes/cartRoute.js';
+import orderRouter from './routes/orderRoute.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// app config
-// const path = require('path')
-const app = express()
-const port = process.env.PORT || 4000
+// Define __dirname for ES6 modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// middleware
+const app = express();
+const port = process.env.PORT || 4000;
 
-app.get("/", (req, res) => {
-    app.use(express.static(path.resolve(__dirname, "frontend", "build")));
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-});
-
-app.use(express.json())
+// Middleware
+app.use(express.json());
 app.use(cors({
-    origin: process.env.FRONTEND_URL, // Set to your frontend's URL
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
 }));
-
 
 // DB connection
 connectDB();
 
-// API endpoints
-app.use("/api/food", foodRouter)
-app.use("/images", express.static('uploads'))
-app.use("/api/user", userRouter)
-app.use("/api/cart", cartRouter)
-app.use("/api/order", orderRouter)
+// Serving the frontend
+app.use(express.static(path.resolve(__dirname, 'frontend', 'build')));
 
-app.get("/", (req, res) => {
-    res.send("API working")
-})
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+});
+
+// API endpoints
+app.use('/api/food', foodRouter);
+app.use('/images', express.static('uploads'));
+app.use('/api/user', userRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/order', orderRouter);
 
 app.listen(port, () => {
-    console.log(`server started on http://localhost:${port}`)
+    console.log(`Server started on http://localhost:${port}`);
     console.log(`Running in ${process.env.NODE_ENV} mode`);
-})
+});
