@@ -27,10 +27,10 @@ app.use(cors({
 connectDB();
 
 // Serving the frontend
-app.use(express.static(path.resolve(__dirname, 'frontend')));
+app.use(express.static(path.resolve(__dirname, 'frontend', 'dist')));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'frontend', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
 });
 
 // API endpoints
