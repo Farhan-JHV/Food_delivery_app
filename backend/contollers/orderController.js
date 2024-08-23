@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const placeOrder = async (req, res) => {
     
-    const frontend_url = process.env.FRONTEND_URL || "http://localhost:5174";
+    const frontend_url = `${window.location.origin}`;
 
     try {
         // Create and save the new order
